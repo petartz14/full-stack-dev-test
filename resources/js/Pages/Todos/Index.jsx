@@ -81,7 +81,7 @@ const updateForm = (data, change, update, processing, errors, updateStatus) => {
                         className="py-1 px-4 text-sm mr-1 bg-teal-600 text-white rounded hover:bg-teal-800"
                         onClick={(e) => updateStatus(e, data.id, "completed")}
                     >
-                        Complete this todo
+                        Mark as complete
                     </button>
                     <button
                         disabled={processing}
