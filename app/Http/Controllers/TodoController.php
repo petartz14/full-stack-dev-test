@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TodoRequest;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 
@@ -15,49 +16,42 @@ class TodoController extends Controller
         $todos = Todo::query()->get()->toArray();
 
         return inertia('Todos/Index', [
-            'todoTodos' => array_filter($todos, fn($todo) => $todo['status'] === 'todo'),
-            'completeTodos' => array_filter($todos, fn($todo) => $todo['status'] === 'completed'),
+            'todoTodos' => array_values(array_filter($todos, fn($todo) => $todo['status'] === 'todo')),
+            'completeTodos' => array_values(array_filter($todos, fn($todo) => $todo['status'] === 'completed')),
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TodoRequest $request)
     {
-        //
-    }
+        Todo::create([
+            'description' => $request->input('description'),
+            'status' => 'todo'
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Todo $todo)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Todo $todo)
-    {
-        //
+        return redirect()->back();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Todo $todo)
+    public function update(TodoRequest $request, Todo $todo)
     {
-        //
+        $todo->update($request->all());
+
+        return redirect()->back();
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updateStatus(Todo $todo, string $status)
+    {
+        $todo->update(['status' => $status]);
+
+        return redirect()->back();
     }
 
     /**
@@ -65,6 +59,8 @@ class TodoController extends Controller
      */
     public function destroy(Todo $todo)
     {
-        //
+        $todo->delete();
+
+        return redirect()->back();
     }
 }
