@@ -12,7 +12,12 @@ class TodoController extends Controller
      */
     public function index()
     {
-        return inertia('Todos/Index');
+        $todos = Todo::query()->get()->toArray();
+
+        return inertia('Todos/Index', [
+            'todoTodos' => array_filter($todos, fn($todo) => $todo['status'] === 'todo'),
+            'completeTodos' => array_filter($todos, fn($todo) => $todo['status'] === 'completed'),
+        ]);
     }
 
     /**
